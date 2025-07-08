@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: mc-o11y-trigger
+
+  datasource:
+    url: jdbc:h2:mem:o11y-alert;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    # database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
