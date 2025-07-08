@@ -1,0 +1,52 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: rabbitmq
+    volumes:
+      # - ./.docker/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./.docker/rabbitmq/etc/:/etc/rabbitmq
+      - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+    ports:
+      - "5672:5672"    # AMQP
+      - "1883:1883"    # MQTT
+      - "15672:15672"  # Dashboard
+      # - "8883:8883"    # MQTT/TLS (optional)
+      # - "15675:15675"  # MQTT WebSocket (optional)
+    environment:
+      RABBITMQ_ENABLED_PLUGINS_FILE: /etc/rabbitmq/enabled_plugins
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: '-rabbitmq_management load_definitions "/etc/rabbitmq/definitions.json"'
+      # RABBITMQ_DEFAULT_USER: "admin"
+      # RABBITMQ_DEFAULT_PASS: "admin"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"  # Grafana Web UI
+    volumes:
+      - ./.docker/grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    restart: unless-stopped
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: o11y-alert
+      MARIADB_USER: root
+      MARIADB_PASSWORD: root
+    volumes:
+      - ./.docker/mariadb:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
