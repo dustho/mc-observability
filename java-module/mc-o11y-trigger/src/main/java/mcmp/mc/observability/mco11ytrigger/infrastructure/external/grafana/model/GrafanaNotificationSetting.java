@@ -1,12 +1,14 @@
 package mcmp.mc.observability.mco11ytrigger.infrastructure.external.grafana.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
 @ToString
@@ -14,36 +16,31 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GrafanaNotificationSetting {
 
-  private String receiver;
+	private String receiver;
 
-  @JsonProperty("repeat_interval")
-  private String repeatInterval;
+	@JsonProperty("repeat_interval")
+	private String repeatInterval;
 
-  @JsonProperty("mute_time_intervals")
-  private List<String> muteTimeIntervals;
+	@JsonProperty("mute_time_intervals")
+	private List<String> muteTimeIntervals;
 
-  @JsonProperty("group_wait")
-  private String groupWait;
+	@JsonProperty("group_wait")
+	private String groupWait;
 
-  @JsonProperty("group_interval")
-  private String groupInterval;
+	@JsonProperty("group_interval")
+	private String groupInterval;
 
-  @JsonProperty("group_by")
-  private List<String> groupBy;
+	@JsonProperty("group_by")
+	private List<String> groupBy;
 
-  @Builder
-  public GrafanaNotificationSetting(
-      String receiver,
-      String repeatInterval,
-      List<String> muteTimeIntervals,
-      String groupWait,
-      String groupInterval,
-      List<String> groupBy) {
-    this.receiver = receiver;
-    this.repeatInterval = repeatInterval;
-    this.muteTimeIntervals = muteTimeIntervals;
-    this.groupWait = groupWait;
-    this.groupInterval = groupInterval;
-    this.groupBy = groupBy;
-  }
+	@Builder
+	public GrafanaNotificationSetting(String receiver, String repeatInterval, List<String> muteTimeIntervals,
+			String groupWait, String groupInterval, List<String> groupBy) {
+		this.receiver = receiver;
+		this.repeatInterval = repeatInterval;
+		this.muteTimeIntervals = muteTimeIntervals;
+		this.groupWait = groupWait;
+		this.groupInterval = groupInterval;
+		this.groupBy = groupBy;
+	}
 }

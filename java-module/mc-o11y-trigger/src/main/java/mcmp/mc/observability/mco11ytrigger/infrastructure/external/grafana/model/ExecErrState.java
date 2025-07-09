@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum ExecErrState {
-  OK("OK"),
-  ALERTING("Alerting"),
-  ERROR("Error");
+	OK("OK"), ALERTING("Alerting"), ERROR("Error");
 
-  private final String value;
+	private final String value;
 }

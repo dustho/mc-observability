@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import mcmp.mc.observability.mco11ytrigger.application.controller.dto.request.TriggerCreateRequest;
 
 @Getter
@@ -12,17 +13,17 @@ import mcmp.mc.observability.mco11ytrigger.application.controller.dto.request.Tr
 @AllArgsConstructor
 public class TriggerCreateDto {
 
-  private String title;
-  private String namespaceId;
-  private String targetId;
-  private boolean isActive;
+	private String title;
+	private String namespaceId;
+	private String targetId;
+	private boolean isActive;
 
-  public static TriggerCreateDto from(TriggerCreateRequest req) {
-    TriggerCreateDto dto = new TriggerCreateDto();
-    dto.title = req.title();
-    dto.namespaceId = req.namespaceId();
-    dto.targetId = req.targetId();
-    dto.isActive = req.isActive();
-    return dto;
-  }
+	public static TriggerCreateDto from(TriggerCreateRequest req) {
+		TriggerCreateDto dto = new TriggerCreateDto();
+		dto.title = req.title();
+		dto.namespaceId = req.namespaceId();
+		dto.targetId = req.targetId();
+		dto.isActive = req.isActive();
+		return dto;
+	}
 }

@@ -6,18 +6,17 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ThresholdCondition {
-  private double info;
-  private double warning;
-  private double critical;
+	private double info;
+	private double warning;
+	private double critical;
 
-  public String toJson() {
-    return """
-                {
-                    "info": "%s",
-                    "warning": "%s",
-                    "critical": "%s"
-                }
-                """
-        .formatted(info, warning, critical);
-  }
+	public String toJson() {
+		return """
+				{
+				    "info": "%s",
+				    "warning": "%s",
+				    "critical": "%s"
+				}
+				""".formatted(info, warning, critical);
+	}
 }

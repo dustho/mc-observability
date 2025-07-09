@@ -4,15 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum AggregationType {
-  MIN("min"),
-  MAX("max"),
-  AVG("avg"),
-  LAST("last"),
-  ;
+	MIN("min"), MAX("max"), AVG("avg"), LAST("last"),;
 
-  private final String name;
+	private final String name;
 
-  AggregationType(String value) {
-    this.name = value;
-  }
+	AggregationType(String value) {
+		this.name = value;
+	}
 }

@@ -10,6 +10,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TimeRange {
-  private Integer from;
-  private Integer to;
+	private Integer from;
+	private Integer to;
 }
