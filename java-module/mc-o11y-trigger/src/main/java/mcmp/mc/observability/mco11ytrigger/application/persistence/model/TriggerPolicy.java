@@ -1,5 +1,8 @@
 package mcmp.mc.observability.mco11ytrigger.application.persistence.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -13,7 +16,7 @@ public class TriggerPolicy {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 
 	private String title;
 
@@ -29,7 +32,8 @@ public class TriggerPolicy {
 
 	private String repeatInterval;
 
-	private int version;
+	@OneToMany(mappedBy = "triggerPolicy", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
+	private List<TriggerTarget> triggerTargets = new ArrayList<>();
 
 	public static TriggerPolicy create(TriggerPolicyCreateDto dto) {
 		TriggerPolicy entity = new TriggerPolicy();
@@ -40,7 +44,6 @@ public class TriggerPolicy {
 		entity.aggregationType = dto.getAggregationType().getName();
 		entity.holdDuration = dto.getHoldDuration();
 		entity.repeatInterval = dto.getRepeatInterval();
-		entity.version = 1;
 		return entity;
 	}
 
@@ -55,5 +58,15 @@ public class TriggerPolicy {
 		entity.holdDuration = holdDuration;
 		entity.repeatInterval = repeatInterval;
 		return entity;
+	}
+
+	public TriggerTarget addTriggerTarget(TriggerTarget triggerTarget) {
+		triggerTarget.setTriggerPolicy(this);
+		triggerTargets.add(triggerTarget);
+		return triggerTarget;
+	}
+
+	public void removeIfNotContains(Set<String> requestedTargetKeys) {
+		this.triggerTargets.removeIf(triggerTarget -> !requestedTargetKeys.contains(triggerTarget.getKey()));
 	}
 }
