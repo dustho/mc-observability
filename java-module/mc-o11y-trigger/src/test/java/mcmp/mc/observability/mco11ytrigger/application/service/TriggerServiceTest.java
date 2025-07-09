@@ -98,4 +98,20 @@ public class TriggerServiceTest {
 		assertNotNull(triggerTargets);
 		assertEquals(2, triggerTargets.size());
 	}
+
+	@Transactional
+	@Test
+	public void deleteTriggerTarget() {
+		TriggerPolicy triggerPolicy = DummyFactory.triggerPolicy();
+		TriggerTarget triggerTarget = DummyFactory.triggerTarget();
+		triggerPolicy.addTriggerTarget(triggerTarget);
+		triggerPolicyRepository.save(triggerPolicy);
+
+		doNothing().when(alertManager).deleteAlertRule(any());
+
+		triggerService.deleteTriggerPolicy(triggerPolicy.getId());
+
+		assertFalse(triggerPolicyRepository.existsById(triggerPolicy.getId()));
+		assertFalse(triggerTargetRepository.existsById(triggerTarget.getId()));
+	}
 }

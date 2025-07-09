@@ -70,4 +70,13 @@ public class TriggerService {
 				.map(targetDto -> targetDto.namespaceId() + targetDto.targetId()).collect(Collectors.toSet());
 		triggerPolicy.removeIfNotContains(requestedTargetKeys);
 	}
+
+	public void deleteTriggerPolicy(long id) {
+		TriggerPolicy triggerPolicy = triggerPolicyRepository.findById(id).orElseThrow(RuntimeException::new);
+		List<TriggerTarget> triggerTargets = triggerPolicy.getTriggerTargets();
+		for (TriggerTarget triggerTarget : triggerTargets) {
+			alertManager.deleteAlertRule(triggerTarget.getUuid());
+		}
+		triggerPolicyRepository.deleteById(id);
+	}
 }

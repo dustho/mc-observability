@@ -72,6 +72,14 @@ class TriggerControllerTest {
 	}
 
 	@Test
+	void deleteTriggerPolicy() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/o11y/trigger/policy/1")).andExpect(status().isAccepted())
+				.andDo(document("trigger-policy-delete"));
+
+		verify(triggerService).deleteTriggerPolicy(any(long.class));
+	}
+
+	@Test
 	void updateTriggerTarget() throws Exception {
 		TriggerTargetUpdateRequest request = new TriggerTargetUpdateRequest(List
 				.of(TriggerTargetDto.builder().namespaceId("namespaceId").targetId("targetId").isActive(true).build()));
