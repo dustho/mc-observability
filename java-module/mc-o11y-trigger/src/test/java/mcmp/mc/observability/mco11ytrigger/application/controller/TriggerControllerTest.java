@@ -1,5 +1,7 @@
 package mcmp.mc.observability.mco11ytrigger.application.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,13 +12,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import mcmp.mc.observability.mco11ytrigger.application.common.dto.ThresholdCondition;
+import mcmp.mc.observability.mco11ytrigger.application.common.dto.TriggerTargetDto;
 import mcmp.mc.observability.mco11ytrigger.application.common.type.AggregationType;
 import mcmp.mc.observability.mco11ytrigger.application.common.type.ResourceType;
-import mcmp.mc.observability.mco11ytrigger.application.controller.dto.request.TriggerCreateRequest;
 import mcmp.mc.observability.mco11ytrigger.application.controller.dto.request.TriggerPolicyCreateRequest;
+import mcmp.mc.observability.mco11ytrigger.application.controller.dto.request.TriggerTargetUpdateRequest;
 import mcmp.mc.observability.mco11ytrigger.application.service.TriggerService;
-import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerCreateDto;
 import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerPolicyCreateDto;
+import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerTargetUpdateDto;
 import mcmp.mc.observability.mco11ytrigger.util.JsonConverter;
 
 import org.junit.jupiter.api.Test;
@@ -69,19 +72,19 @@ class TriggerControllerTest {
 	}
 
 	@Test
-	void createTrigger() throws Exception {
-		TriggerCreateRequest request = TriggerCreateRequest.builder().title("title").namespaceId("namespaceId")
-				.targetId("targetId").isActive(true).build();
+	void updateTriggerTarget() throws Exception {
+		TriggerTargetUpdateRequest request = new TriggerTargetUpdateRequest(List
+				.of(TriggerTargetDto.builder().namespaceId("namespaceId").targetId("targetId").isActive(true).build()));
 
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/o11y/trigger/policy/1")
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/o11y/trigger/policy/1/targets")
 				.contentType(MediaType.APPLICATION_JSON).content(JsonConverter.asJsonString(request)))
-				.andExpect(status().isCreated())
-				.andDo(document("trigger-create",
-						requestFields(fieldWithPath("title").description("title").type(String.class),
-								fieldWithPath("namespaceId").description("namespace id").type(String.class),
-								fieldWithPath("targetId").description("target id").type(String.class),
-								fieldWithPath("isActive").description("active status").type(boolean.class))));
+				.andExpect(status().isAccepted())
+				.andDo(document("trigger-target-update", requestFields(
+						fieldWithPath("triggerTargets").description("List of trigger target objects"),
+						fieldWithPath("triggerTargets[].namespaceId").description("namespace id").type(String.class),
+						fieldWithPath("triggerTargets[].targetId").description("target id").type(String.class),
+						fieldWithPath("triggerTargets[].isActive").description("active status").type(boolean.class))));
 
-		verify(triggerService).createTrigger(any(long.class), any(TriggerCreateDto.class));
+		verify(triggerService).updateTriggerTarget(any(long.class), any(TriggerTargetUpdateDto.class));
 	}
 }

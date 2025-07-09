@@ -21,6 +21,7 @@ public class GrafanaAlertManager implements AlertManager {
 		this.alertRuleFactory = alertRuleFactory;
 	}
 
+	@Override
 	public void createAlertRule(AlertRuleCreateDto dto) {
 		String query = Flux.from("cmp/autogen").range(-2L, -1L, ChronoUnit.MINUTES)
 				.filter(Restrictions.and(Restrictions.measurement().equal(dto.getMeasurement()),
@@ -36,6 +37,7 @@ public class GrafanaAlertManager implements AlertManager {
 		grafanaClient.createAlertRule(alertRule);
 	}
 
+	@Override
 	public void deleteAlertRule(String uuid) {
 		grafanaClient.deleteAlertRule(uuid);
 	}

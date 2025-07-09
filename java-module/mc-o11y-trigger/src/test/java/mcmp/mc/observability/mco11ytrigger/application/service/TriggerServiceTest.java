@@ -1,5 +1,7 @@
 package mcmp.mc.observability.mco11ytrigger.application.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -8,14 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import mcmp.mc.observability.mco11ytrigger.adapter.alert.AlertManager;
 import mcmp.mc.observability.mco11ytrigger.application.common.dto.ThresholdCondition;
+import mcmp.mc.observability.mco11ytrigger.application.common.dto.TriggerTargetDto;
 import mcmp.mc.observability.mco11ytrigger.application.common.type.AggregationType;
 import mcmp.mc.observability.mco11ytrigger.application.common.type.ResourceType;
-import mcmp.mc.observability.mco11ytrigger.application.persistence.model.Trigger;
 import mcmp.mc.observability.mco11ytrigger.application.persistence.model.TriggerPolicy;
+import mcmp.mc.observability.mco11ytrigger.application.persistence.model.TriggerTarget;
 import mcmp.mc.observability.mco11ytrigger.application.persistence.repository.TriggerPolicyRepository;
-import mcmp.mc.observability.mco11ytrigger.application.persistence.repository.TriggerRepository;
-import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerCreateDto;
+import mcmp.mc.observability.mco11ytrigger.application.persistence.repository.TriggerTargetRepository;
 import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerPolicyCreateDto;
+import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerTargetUpdateDto;
 import mcmp.mc.observability.mco11ytrigger.infrastructure.external.grafana.GrafanaAlertRuleFactory;
 import mcmp.mc.observability.mco11ytrigger.infrastructure.external.grafana.GrafanaClient;
 import mcmp.mc.observability.mco11ytrigger.util.DummyFactory;
@@ -29,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @MockitoBean(types = {GrafanaAlertRuleFactory.class, GrafanaClient.class})
 @ActiveProfiles("test")
-@Transactional
 @SpringBootTest
 public class TriggerServiceTest {
 
@@ -40,11 +42,12 @@ public class TriggerServiceTest {
 	private TriggerPolicyRepository triggerPolicyRepository;
 
 	@Autowired
-	private TriggerRepository triggerRepository;
+	private TriggerTargetRepository triggerTargetRepository;
 
 	@MockitoBean
 	private AlertManager alertManager;
 
+	@Transactional
 	@Test
 	public void createTriggerPolicy() {
 		TriggerPolicyCreateDto dto = TriggerPolicyCreateDto.builder().title("title").description("description")
@@ -57,16 +60,42 @@ public class TriggerServiceTest {
 		assertNotNull(triggerPolicy);
 	}
 
+	@Transactional
 	@Test
-	public void createTrigger() {
+	public void addTriggerTarget() {
 		TriggerPolicy triggerPolicy = triggerPolicyRepository.save(DummyFactory.triggerPolicy());
-		TriggerCreateDto dto = TriggerCreateDto.builder().title("title").namespaceId("namespaceId").targetId("targetId")
-				.isActive(true).build();
+		TriggerTargetUpdateDto dto = new TriggerTargetUpdateDto(List
+				.of(TriggerTargetDto.builder().namespaceId("namespaceId").targetId("targetId").isActive(true).build()));
+
 		doNothing().when(alertManager).createAlertRule(any());
+		doNothing().when(alertManager).deleteAlertRule(any());
 
-		long triggerId = triggerService.createTrigger(triggerPolicy.getId(), dto);
+		triggerService.updateTriggerTarget(triggerPolicy.getId(), dto);
 
-		Trigger trigger = triggerRepository.findById(triggerId).orElse(null);
-		assertNotNull(trigger);
+		List<TriggerTarget> triggerTargets = triggerTargetRepository.findAll();
+		assertNotNull(triggerTargets);
+		assertEquals(1, triggerTargets.size());
+	}
+
+	@Transactional
+	@Test
+	public void updateTriggerTarget() {
+		TriggerPolicy triggerPolicy = DummyFactory.triggerPolicy();
+		TriggerTarget triggerTarget = DummyFactory.triggerTarget();
+		triggerPolicy.addTriggerTarget(triggerTarget);
+		triggerPolicyRepository.save(triggerPolicy);
+
+		TriggerTargetUpdateDto dto = new TriggerTargetUpdateDto(List.of(
+				TriggerTargetDto.builder().namespaceId("namespaceId1").targetId("targetId1").isActive(true).build(),
+				TriggerTargetDto.builder().namespaceId("namespaceId2").targetId("targetId2").isActive(true).build()));
+
+		doNothing().when(alertManager).createAlertRule(any());
+		doNothing().when(alertManager).deleteAlertRule(any());
+
+		triggerService.updateTriggerTarget(triggerPolicy.getId(), dto);
+
+		List<TriggerTarget> triggerTargets = triggerTargetRepository.findAll();
+		assertNotNull(triggerTargets);
+		assertEquals(2, triggerTargets.size());
 	}
 }
