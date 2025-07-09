@@ -19,11 +19,18 @@ spotless {
 				'\\#org.junit'
 		)
 
-		googleJavaFormat()
+		eclipse().configProperties([
+				'org.eclipse.jdt.core.formatter.tabulation.char': 'space',
+				'org.eclipse.jdt.core.formatter.tabulation.size': '2',
+				'org.eclipse.jdt.core.formatter.lineSplit': '120',
+				'org.eclipse.jdt.core.formatter.indentation.size': '2',
+				'org.eclipse.jdt.core.formatter.comment.line_length': '120'
+		] as String)
 		formatAnnotations()
 		removeUnusedImports()
 		trimTrailingWhitespace()
 		endWithNewline()
+
 	}
 }
 

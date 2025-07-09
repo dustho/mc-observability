@@ -1,8 +1,10 @@
 package mcmp.mc.observability.mco11ytrigger.application.persistence.model;
 
-import jakarta.persistence.*;
 import java.util.UUID;
+import jakarta.persistence.*;
+
 import lombok.Getter;
+
 import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerCreateDto;
 
 @Getter
@@ -10,32 +12,32 @@ import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerCreate
 @Entity
 public class Trigger {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-  private String uuid;
+	private String uuid;
 
-  private String title;
+	private String title;
 
-  private String namespaceId;
+	private String namespaceId;
 
-  private String targetId;
+	private String targetId;
 
-  private boolean isActive;
+	private boolean isActive;
 
-  @JoinColumn(name = "trigger_policy_snapshot_id")
-  @ManyToOne(fetch = FetchType.LAZY)
-  private TriggerPolicySnapshot triggerPolicySnapshot;
+	@JoinColumn(name = "trigger_policy_snapshot_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private TriggerPolicySnapshot triggerPolicySnapshot;
 
-  public static Trigger create(TriggerPolicySnapshot triggerPolicySnapshot, TriggerCreateDto dto) {
-    Trigger entity = new Trigger();
-    entity.uuid = UUID.randomUUID().toString();
-    entity.title = dto.getTitle();
-    entity.namespaceId = dto.getNamespaceId();
-    entity.targetId = dto.getTargetId();
-    entity.isActive = dto.isActive();
-    entity.triggerPolicySnapshot = triggerPolicySnapshot;
-    return entity;
-  }
+	public static Trigger create(TriggerPolicySnapshot triggerPolicySnapshot, TriggerCreateDto dto) {
+		Trigger entity = new Trigger();
+		entity.uuid = UUID.randomUUID().toString();
+		entity.title = dto.getTitle();
+		entity.namespaceId = dto.getNamespaceId();
+		entity.targetId = dto.getTargetId();
+		entity.isActive = dto.isActive();
+		entity.triggerPolicySnapshot = triggerPolicySnapshot;
+		return entity;
+	}
 }

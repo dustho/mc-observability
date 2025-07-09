@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 import lombok.Getter;
 
 @Getter
@@ -12,39 +13,39 @@ import lombok.Getter;
 @Entity
 public class TriggerPolicySnapshot {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-  private long triggerPolicyId;
+	private long triggerPolicyId;
 
-  private int version;
+	private int version;
 
-  private String title;
+	private String title;
 
-  private String description;
+	private String description;
 
-  private String thresholdCondition;
+	private String thresholdCondition;
 
-  private String resourceType;
+	private String resourceType;
 
-  private String aggregationType;
+	private String aggregationType;
 
-  private String holdDuration;
+	private String holdDuration;
 
-  private String repeatInterval;
+	private String repeatInterval;
 
-  public static TriggerPolicySnapshot create(TriggerPolicy triggerPolicy) {
-    TriggerPolicySnapshot entity = new TriggerPolicySnapshot();
-    entity.triggerPolicyId = triggerPolicy.getId();
-    entity.version = triggerPolicy.getVersion();
-    entity.title = triggerPolicy.getTitle();
-    entity.description = triggerPolicy.getDescription();
-    entity.thresholdCondition = triggerPolicy.getThresholdCondition();
-    entity.resourceType = triggerPolicy.getResourceType();
-    entity.aggregationType = triggerPolicy.getAggregationType();
-    entity.holdDuration = triggerPolicy.getHoldDuration();
-    entity.repeatInterval = triggerPolicy.getRepeatInterval();
-    return entity;
-  }
+	public static TriggerPolicySnapshot create(TriggerPolicy triggerPolicy) {
+		TriggerPolicySnapshot entity = new TriggerPolicySnapshot();
+		entity.triggerPolicyId = triggerPolicy.getId();
+		entity.version = triggerPolicy.getVersion();
+		entity.title = triggerPolicy.getTitle();
+		entity.description = triggerPolicy.getDescription();
+		entity.thresholdCondition = triggerPolicy.getThresholdCondition();
+		entity.resourceType = triggerPolicy.getResourceType();
+		entity.aggregationType = triggerPolicy.getAggregationType();
+		entity.holdDuration = triggerPolicy.getHoldDuration();
+		entity.repeatInterval = triggerPolicy.getRepeatInterval();
+		return entity;
+	}
 }
