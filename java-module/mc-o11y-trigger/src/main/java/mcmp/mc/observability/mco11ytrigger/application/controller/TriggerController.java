@@ -27,6 +27,12 @@ public class TriggerController {
 		return ResponseEntity.created(URI.create("/api/o11y/trigger/policy/" + triggerPolicyId)).build();
 	}
 
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteTriggerPolicy(@PathVariable long id) {
+		triggerService.deleteTriggerPolicy(id);
+		return ResponseEntity.accepted().build();
+	}
+
 	@PostMapping("/{id}/targets")
 	public ResponseEntity<?> updateTriggerTarget(@PathVariable long id,
 			@RequestBody TriggerTargetUpdateRequest request) {
