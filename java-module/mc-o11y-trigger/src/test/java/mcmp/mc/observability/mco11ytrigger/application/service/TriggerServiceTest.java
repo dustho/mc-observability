@@ -4,6 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +21,9 @@ import mcmp.mc.observability.mco11ytrigger.application.persistence.model.Trigger
 import mcmp.mc.observability.mco11ytrigger.application.persistence.model.TriggerTarget;
 import mcmp.mc.observability.mco11ytrigger.application.persistence.repository.TriggerPolicyRepository;
 import mcmp.mc.observability.mco11ytrigger.application.persistence.repository.TriggerTargetRepository;
+import mcmp.mc.observability.mco11ytrigger.application.service.dto.CustomPageDto;
 import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerPolicyCreateDto;
+import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerPolicyDetailDto;
 import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerTargetUpdateDto;
 import mcmp.mc.observability.mco11ytrigger.infrastructure.external.grafana.GrafanaAlertRuleFactory;
 import mcmp.mc.observability.mco11ytrigger.infrastructure.external.grafana.GrafanaClient;
@@ -101,7 +107,7 @@ public class TriggerServiceTest {
 
 	@Transactional
 	@Test
-	public void deleteTriggerTarget() {
+	public void deleteTriggerPolicy() {
 		TriggerPolicy triggerPolicy = DummyFactory.triggerPolicy();
 		TriggerTarget triggerTarget = DummyFactory.triggerTarget();
 		triggerPolicy.addTriggerTarget(triggerTarget);
@@ -113,5 +119,21 @@ public class TriggerServiceTest {
 
 		assertFalse(triggerPolicyRepository.existsById(triggerPolicy.getId()));
 		assertFalse(triggerTargetRepository.existsById(triggerTarget.getId()));
+	}
+
+	@Transactional
+	@Test
+	public void getTriggerPolicies() {
+		TriggerPolicy triggerPolicy = DummyFactory.triggerPolicy();
+		TriggerTarget triggerTarget = DummyFactory.triggerTarget();
+		triggerPolicy.addTriggerTarget(triggerTarget);
+		triggerPolicyRepository.save(triggerPolicy);
+
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Direction.DESC, "id"));
+		CustomPageDto<TriggerPolicyDetailDto> triggerPolicyPage = triggerService.getTriggerPolicies(pageable);
+
+		assertEquals(1, triggerPolicyPage.getTotalPages());
+		assertEquals(1, triggerPolicyPage.getTotalElements());
+		assertEquals(1, triggerPolicyPage.getContent().size());
 	}
 }
