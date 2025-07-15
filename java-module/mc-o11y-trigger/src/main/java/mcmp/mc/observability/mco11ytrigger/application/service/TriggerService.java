@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +15,9 @@ import mcmp.mc.observability.mco11ytrigger.application.common.dto.TriggerTargetD
 import mcmp.mc.observability.mco11ytrigger.application.persistence.model.TriggerPolicy;
 import mcmp.mc.observability.mco11ytrigger.application.persistence.model.TriggerTarget;
 import mcmp.mc.observability.mco11ytrigger.application.persistence.repository.TriggerPolicyRepository;
+import mcmp.mc.observability.mco11ytrigger.application.service.dto.CustomPageDto;
 import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerPolicyCreateDto;
+import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerPolicyDetailDto;
 import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerTargetUpdateDto;
 
 @Transactional
@@ -78,5 +82,11 @@ public class TriggerService {
 			alertManager.deleteAlertRule(triggerTarget.getUuid());
 		}
 		triggerPolicyRepository.deleteById(id);
+	}
+
+	public CustomPageDto<TriggerPolicyDetailDto> getTriggerPolicies(Pageable pageable) {
+		Page<TriggerPolicy> triggerPolicyPage = triggerPolicyRepository.findAll(pageable);
+		return CustomPageDto.of(triggerPolicyPage,
+				() -> triggerPolicyPage.getContent().stream().map(TriggerPolicy::toDto).toList());
 	}
 }

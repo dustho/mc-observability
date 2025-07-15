@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 import mcmp.mc.observability.mco11ytrigger.application.common.dto.TriggerTargetDto;
+import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerTargetDetailDto;
 
 @Getter
 @Table(name = "trigger_target")
@@ -49,6 +50,11 @@ public class TriggerTarget {
 		entity.isActive = isActive;
 		entity.setupKey();
 		return entity;
+	}
+
+	public TriggerTargetDetailDto toDto() {
+		return TriggerTargetDetailDto.builder().id(id).targetId(targetId).namespaceId(namespaceId).isActive(isActive)
+				.build();
 	}
 
 	public void setupKey() {

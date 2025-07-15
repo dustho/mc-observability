@@ -7,7 +7,10 @@ import jakarta.persistence.*;
 
 import lombok.Getter;
 
+import mcmp.mc.observability.mco11ytrigger.application.common.dto.ThresholdCondition;
 import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerPolicyCreateDto;
+import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerPolicyDetailDto;
+import mcmp.mc.observability.mco11ytrigger.application.service.dto.TriggerTargetDetailDto;
 
 @Getter
 @Table(name = "trigger_policy")
@@ -58,6 +61,14 @@ public class TriggerPolicy {
 		entity.holdDuration = holdDuration;
 		entity.repeatInterval = repeatInterval;
 		return entity;
+	}
+
+	public TriggerPolicyDetailDto toDto() {
+		List<TriggerTargetDetailDto> targets = triggerTargets.stream().map(TriggerTarget::toDto).toList();
+		return TriggerPolicyDetailDto.builder().id(id).title(title).description(description)
+				.thresholdCondition(ThresholdCondition.from(thresholdCondition)).resourceType(resourceType)
+				.aggregationType(aggregationType).holdDuration(holdDuration).repeatInterval(repeatInterval)
+				.targets(targets).build();
 	}
 
 	public TriggerTarget addTriggerTarget(TriggerTarget triggerTarget) {
